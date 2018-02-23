@@ -47,19 +47,19 @@ object CoinRepository {
 
     init{
         socket.connect()
-        socket.on(Socket.EVENT_CONNECT_ERROR, Emitter.Listener{
+        socket.on(Socket.EVENT_CONNECT_ERROR, {
             Log.d("Main", "Connection Failure")
 
         })
-        socket.on(Socket.EVENT_DISCONNECT, Emitter.Listener {
+        socket.on(Socket.EVENT_DISCONNECT, {
             Log.d("Main", "Socket Disconnect")
         })
-        socket.on(Socket.EVENT_CONNECT, Emitter.Listener{
+        socket.on(Socket.EVENT_CONNECT, {
             Log.d("Main", "Connection Successful")
             socket.emit("SubAdd", JSONObject("""{subs: ["5~CCCAGG~BTC~USD"]}"""))
         })
 
-        socket.on("m", Emitter.Listener {
+        socket.on("m", {
             it.forEach { thing -> Log.d("Main", thing.toString()) }
         })
     }
@@ -76,19 +76,19 @@ object CoinRepository {
                 .subscribe{
                     val tempList = ArrayList<Coin>()
                     it.data?.forEach { tempList.add(it.value) }
-                    val templist2 = tempList.sortedWith(compareBy { it.sortOrder?.toInt() }).subList(0, 50)
-                    emitCoins(templist2)
-                    data.value = templist2
+                    val tempList2 = tempList.sortedWith(compareBy { it.sortOrder?.toInt() }).subList(0, 50)
+                    emitCoins(tempList2)
+                    data.value = tempList2
                     setCoinPrices(data)
                 }
         return data
     }
 
-    fun emitCoins(list: List<Coin>){
+    private fun emitCoins(list: List<Coin>){
         var temp: String = ""
         list.forEach {
             if(it.symbol != "BTC")
-                temp = temp + "5~CCCAGG~${it.symbol}~BTC,"
+                temp += "5~CCCAGG~${it.symbol}~BTC,"
         }
         temp.trim(',')
         socket.emit("SubAdd", JSONObject("""{subs: [$temp]}"""))
