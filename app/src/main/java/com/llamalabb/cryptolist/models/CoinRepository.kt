@@ -135,7 +135,7 @@ object CoinRepository {
         })
     }
 
-    private fun String.formatStringDoubleTwoDecimalPlaces() = "$" + "%.2f".format(this.toDouble())
+    private fun String.formatStringDoubleTwoDecimalPlaces() = "$"+"%.2f".format(this.toDouble())
 
     private fun List<Coin>.getCoinIndex(symbol: String) = this.single { it.symbol == symbol }.sortOrder!!.toInt() - 1
 
